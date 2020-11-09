@@ -13,7 +13,7 @@ struct 	    mydatapooldata {		// start of structure template
 
 
 int IO::main() {
-	CTypedPipe <string>	p1("Pipe1", 1024);			// create the three named pipelines 
+	CTypedPipe <int>	p1("Pipe1", 1024);			// create the three named pipelines 
 	CSemaphore P1("Elv", 0, 1);
 	CSemaphore C1("ElvDone", 1, 1);
 	CDataPool 		dp("Elevator", sizeof(struct mydatapooldata));
@@ -25,15 +25,16 @@ int IO::main() {
 		// Get Current Floor + Direction
 		int message = _getch();
 		int message2;
-		string m1s = std::to_string(message);
 		printf("%d", message);
 		if (message == 100 || message == 117) {
+			p1.Write(&message);
 			message2 = _getch();
-			string m2s = std::to_string(message2);
 			if (message2 > '0' && message2 < '9') {
-				string m = m1s + m2s;
-				p1.Write(&m2s); //send to dispatcher
+				p1.Write(&message2); //send to dispatcher
 			}
+		}
+		else {
+			continue;
 		}
 
 		
@@ -55,7 +56,9 @@ int IO::main() {
 		printf("%d \n", message - 48);
 		if (message > '0' && message <= '9') {
 			string m1s = std::to_string(message);
-			p1.Write(&m1s);
+			char b[100];
+			strcpy_s(b, m1s.c_str());
+			p1.Write(&message);
 		}
 
 		destFloor = message - 48;

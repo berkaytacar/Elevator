@@ -14,7 +14,7 @@ struct 	    mydatapooldata {		// start of structure template
 CEvent   ElevatorUpdate("E1UPD");
 
 int Dispatcher::main() {
-	CTypedPipe <string>	p1("Pipe1", 1024);			// create the three named pipelines 
+	CTypedPipe <int>	p1("Pipe1", 1024);			// create the three named pipelines 
 	CSemaphore P2("Status", 0, 1);
 	CSemaphore C2("StatusDone", 1, 1);
 	CDataPool 		dp("Elevator", sizeof(struct mydatapooldata));
@@ -31,18 +31,26 @@ int Dispatcher::main() {
 	m1.Resume();
 	//m2.Resume();
 
-	//while (1) {
+	while (1) {
 
 		// Read Floor and Dir Passenger Wants to go
-		string s = "1"; // "u4" or "d5"
+
+		int s;
 		//while (p1.TestForData() < sizeof(s)) {
 			///
 		//}
+
+		//RECIEVE UP OR DOWN (U= 117 / D = 100)
+		p1.Read(&s);
+		e1.Post(s); // SEND TO ELE 
+
+
 		p1.Read(&s);		
 
 		// Determine which elevator to send to that passenger
 		// Send Elevator to Pick up Passenger
-		int flr = stoi(s) - 48; //FIX TO READ PROPER NUMBER
+
+		int flr = s - 48; //FIX TO READ PROPER NUMBER
 		printf("\n %d" ,flr);
 		e1.Post(flr);
 
@@ -56,10 +64,9 @@ int Dispatcher::main() {
 		
 		printf("reading...");
 		// Read Floor and Dir Passenger Wants to go
-		s = "1";
 
 		p1.Read(&s);		
-		flr = stoi(s) - 48;
+		flr = s - 48;
 		printf("\n%d\n", flr);
 		e1.Post(flr);
 
@@ -73,7 +80,7 @@ int Dispatcher::main() {
 
 		printf("\n DISP DONE 1 ITERation");
 
-	//}
+	}
 
 
 

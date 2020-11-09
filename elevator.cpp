@@ -23,27 +23,59 @@ int Elevator::main() {
 	MyDataPool->floor = 0;
 	MyDataPool->status = 1;
 	CEvent   ElevatorUpdate("E1UPD");
-
+	int d;
 
 	do {
 		// Suspend until message arrives
-		printf("\n Elevator waiting for next floor instruction \n");
+		if (Message = myMail.GetMessage()) {
+			if (Message == 100) {
+				d = -1;
+			}
+			else {
+				d = 1;
+			}
+		
+		}
+
+		printf("\n Elevator waiting for next floor instruction \n"); 
+
 		if (Message = myMail.GetMessage()) {
 			// do something
 			Sleep(5000);
 			int destin = Message;
-			printf("Elevator - %d", destin);
-			int dir = MyDataPool->dir;
 			//baed onn message choose what floor to go to
 
-			for (int i = floor; i <= destin; i++) {
-				MyDataPool->floor = i;
-				floor++;
+			while (floor != destin) {
+				floor = floor + d;
+				MyDataPool->floor = floor;
 				ElevatorUpdate.Signal();
 				Sleep(2000);
-				
 			}
+
 			
+		}
+		printf("\n Elevator waiting for next floor instruction \n");
+
+		if (Message = myMail.GetMessage()) {
+			// do something
+			Sleep(5000);
+			int destin = Message;
+			if (destin - floor >= 0) {
+				d = 1;
+			}
+			else {
+				d = -1;
+			}
+			//baed onn message choose what floor to go to
+
+			while (floor != destin) {
+				floor = floor + d;
+				MyDataPool->floor = floor;
+				ElevatorUpdate.Signal();
+				Sleep(2000);
+			}
+
+
 		}
 	} while (1); // continue forever ??
 
