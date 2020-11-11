@@ -34,50 +34,125 @@ int Dispatcher::main() {
 
 	while (1) {
 
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
 		// Read Floor and Dir Passenger Wants to go
 		int d;
 		int s;
+		int dest;
+		int err = 0;
 
 		//RECIEVE UP OR DOWN (U= 117 / D = 100)
 		p1.Read(&s);
-		d = s; //direction
-		p1.Read(&s);		
 
-		// Determine which elevator to send to that passenger
-		// Send Elevator to Pick up Passenger
-		int flr = s - 48; //FIX TO READ PROPER NUMBER
-		if (abs(flr - floor1) >= abs(flr - floor2)) {
-			e2.Post(d);
-			e2.Post(flr);
-			inc2(flr, floor2);
-		}
-		else {
-			e1.Post(d);
-			e1.Post(flr);
-			inc(flr, floor1);
+		if (s == '+') {
+			p1.Read(&s);
+			int faultCode = s - 48; //FIX TO READ PROPER NUMBER
+			if (faultCode == 11) { // elv 1
+				dest = floor1; // stay at the same flr
+				e1.Post(dest);
 
+			}
+			else {// 12 // elv 2
+				dest = floor2; // stay at the same flr
+				e2.Post(dest);
+			}
 		}
-		
+		else if (s == '-') {
+			p1.Read(&s);
+			int faultCode = s - 48; //FIX TO READ PROPER NUMBER
+			if (faultCode == 13) {// elv 1
+				dest = floor1; // stay at the same flr
+				e1.Post(dest);
+			}
+			else {// 14 // elv 2
+
+			}
+		}
+		else if (s == 'e') {
+			p1.Read(&s);
+			if (s == 'e') {
+				floor1 = 0;
+				floor2 = 0;
+				e1.Post(floor1);// send elv1 and 2 to GROUND floor
+				e2.Post(floor2);
+
+			}
+		}
+		else {// here is dir and the floor stuff
+			d = s;// direction here 
+			p1.Read(&s); // read it for the second time for the floor 
+			int flr = s - 48;
+			if (abs(flr - floor1) >= abs(flr - floor2)) {
+				e2.Post(d);
+				e2.Post(flr);
+				inc2(flr, floor2);
+			}
+			else {
+				e1.Post(d);
+				e1.Post(flr);
+				inc(flr, floor1);
+
+			}
+			p1.Read(&s);
+
+			if (s == '1') { //elevator 1 
+				p1.Read(&s);
+				flr = s - 48;
+				e1.Post(flr);
+				inc(flr, floor1);
+
+			}
+			else {
+				p1.Read(&s);
+				flr = s - 48;
+				MOVE_CURSOR(50, 0);
+				printf("halfway point for dispatcher");
+				e2.Post(flr);
+				inc2(flr, floor2);
+			}
+			
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		//d = s; //direction
+		//p1.Read(&s);		
+
+		//// Determine which elevator to send to that passenger
+		//// Send Elevator to Pick up Passenger
+		//int flr = s - 48; //FIX TO READ PROPER NUMBER
+		//if (abs(flr - floor1) >= abs(flr - floor2)) {
+		//	e2.Post(d);
+		//	e2.Post(flr);
+		//	inc2(flr, floor2);
+		//}
+		//else {
+		//	e1.Post(d);
+		//	e1.Post(flr);
+		//	inc(flr, floor1);
+
+		//}
+		//
 
 	
 
-		p1.Read(&s);	
+		//p1.Read(&s);	
 
-		if (s == '1') { //elevator 1 
-			p1.Read(&s);
-			flr = s - 48;
-			e1.Post(flr);
-			inc(flr, floor1);
+		//if (s == '1') { //elevator 1 
+		//	p1.Read(&s);
+		//	flr = s - 48;
+		//	e1.Post(flr);
+		//	inc(flr, floor1);
 
-		}
-		else {
-			p1.Read(&s);
-			flr = s - 48;
-			MOVE_CURSOR(50, 0);
-			printf("halfway point for dispatcher");
-			e2.Post(flr);
-			inc2(flr, floor2);
-		}
+		//}
+		//else {
+		//	p1.Read(&s);
+		//	flr = s - 48;
+		//	MOVE_CURSOR(50, 0);
+		//	printf("halfway point for dispatcher");
+		//	e2.Post(flr);
+		//	inc2(flr, floor2);
+		//}
 	}
 
 
@@ -98,7 +173,7 @@ void Dispatcher :: inc(int dest, int curr) {
 	CDataPool 		dp("Elevator", sizeof(struct mydatapooldata));
 	struct mydatapooldata* MyDataPool = (struct mydatapooldata*)(dp.LinkDataPool());
 
-
+	//while(!err){
 	while (dest != curr) {
 		//Keep getting updates from monitor
 		P2.Wait();
@@ -106,6 +181,7 @@ void Dispatcher :: inc(int dest, int curr) {
 		curr = floor1;
 		C2.Signal();
 	}
+	//}
 	return;
 
 }
@@ -130,5 +206,47 @@ void Dispatcher::inc2(int dest, int curr) {
 
 }
 
-
+//int Dispatcher::checkMessage() {
+//	CTypedPipe <int>	p1("Pipe1", 1024);			// create the three named pipelines 
+//
+//	int d;
+//	int num;
+//	int faultCode;// either 11 or 12 or 13 or 14
+//	int dest;
+//	int err = 0;
+//
+//	p1.Read(&num);// read the pipeline
+//	if (num == '+') {
+//		p1.Read(&num);
+//		int faultCode = num - 48; //FIX TO READ PROPER NUMBER
+//		if (faultCode == 11) { // elv 1
+//			dest = floor1; // stay at the same flr
+//			return dest;
+//
+//		}
+//		else {// 12 // elv 2
+//			dest = floor2; // stay at the same flr
+//			return dest;
+//		}
+//	}
+//	else if (num == '-') {
+//		p1.Read(&num);
+//		int faultCode = num - 48; //FIX TO READ PROPER NUMBER
+//		if (faultCode == 13) {// elv 1
+//			dest = floor1; // stay at the same flr
+//			return dest;
+//		}
+//		else {// 14 // elv 2
+//
+//		}
+//	}
+//	else if (num == 'e') {
+//
+//	}
+//	else {// here is dir and the floor stuff
+//		p1.Read(&num);
+//		d = num;// direction here 
+//	}
+//	return;
+//}
 

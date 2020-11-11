@@ -27,12 +27,40 @@ int InputKey::main() {
 		int message = _getch(); // get the first message
 		int message2;
 		printf("%d", message);// print the up or down in integer
-		if (message == 100 || message == 117) {
-			p1.Write(&message);// send up and down to the dispatcher
-			message2 = _getch();// get the floor info
-			if (message2 > '0' && message2 <= '9') {
-				p1.Write(&message2); //send to dispatcher
+		
+		if (message == 100 || message == 117 || message == 'e' || message=='+' || message=='-') {// check for all possibilities
+			
+			if (message == 'e') {
+				message2 = _getch();// this is to terminate
+				if (message2 == 'e') {
+					p1.Write(&message2);// dispatcher will decide to send the elevators to ground
+				}
 			}
+			else if (message == '+') {// this is for fault cleared
+				message2 = _getch();// this is 1 or 2 for elevator
+				message2 += 10;// this means + // 11 or 12
+				p1.Write(&message2);// dispatcher will clear 
+				
+			}
+			else if (message == '-') {// this is for fault occured
+				message2 = _getch();// this is 1 or 2 for elevator
+				message2 += 12;// this means - // 13 or 14
+				p1.Write(&message2);// dispatcher will clear 
+			}
+			else {
+				p1.Write(&message);// send up and down to the dispatcher
+				message2 = _getch();// get the floor info
+				if (message2 > '0' && message2 <= '9') {
+					p1.Write(&message2); //send to dispatcher
+				}
+			}
+
+
+			//p1.Write(&message);// send up and down to the dispatcher
+			//message2 = _getch();// get the floor info
+			//if (message2 > '0' && message2 <= '9') {
+			//	p1.Write(&message2); //send to dispatcher
+			//}
 		}
 		else {
 			continue;

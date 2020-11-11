@@ -15,9 +15,11 @@ private:
 	int floor2=1;
 	void inc(int dest, int curr);
 	void inc2(int dest, int curr);
-
+	//int checkMessage();
+	
 public:
 	Dispatcher(int __myNumber) { myNum = __myNumber; };
+
 };
 
 
