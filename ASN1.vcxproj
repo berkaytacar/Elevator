@@ -146,16 +146,22 @@
     <ClCompile Include="..\..\..\..\..\RTExamples\RTExamples\rt.cpp" />
     <ClCompile Include="dispatcher.cpp" />
     <ClCompile Include="elevator.cpp" />
+    <ClCompile Include="inputKey.cpp" />
     <ClCompile Include="io.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="monitor.cpp" />
+    <ClCompile Include="updLink.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\RTExamples\RTExamples\rt.h" />
     <ClInclude Include="dispatcher.h" />
     <ClInclude Include="elevator.h" />
+    <ClInclude Include="Elevator2.h" />
+    <ClInclude Include="inputKey.h" />
     <ClInclude Include="io.h" />
     <ClInclude Include="monitor.h" />
+    <ClInclude Include="updLink.h" />
+    <ClInclude Include="updLink2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
