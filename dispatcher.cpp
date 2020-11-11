@@ -78,7 +78,7 @@ int Dispatcher::main() {
 			C2.Signal();
 		}
 
-		printf("\n DISP DONE 1 ITERation");
+		printf("\n DISP DONE 1 ITERation\n");
 
 	}
 

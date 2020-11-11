@@ -16,6 +16,8 @@ public:
 	m1 = new CMutex(string("__Mutex__") + string(Name)); };
 	int getElevatorStatus();
 	void updateStatus();
+	void printScreen(int __myNum, int floor);
+
 };
 
 #endif

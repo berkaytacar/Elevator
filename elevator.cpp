@@ -1,7 +1,7 @@
 #include "C:\RTExamples\RTExamples\rt.h"
 #include <atomic>
 #include "elevator.h"
-atomic_flag flag;
+//atomic_flag flag;
 //Flags were only used to control printing onto the screen
 //Semaphores were used for controlling everything else
 
