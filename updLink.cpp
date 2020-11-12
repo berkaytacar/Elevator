@@ -12,6 +12,7 @@ struct 	    mydatapooldata {		// start of structure template
 	int floor;				// floor corresponding to lifts current position
 	int dir;			// direction of travel of lift
 	int status;		//status
+	int door;
 };
 
 
@@ -24,36 +25,22 @@ int UpdateLink::main() {
 
 	floor = 0;
 	int __myNum = 0;
-
+	while (flag1.test_and_set() == true)
+		;
+	printStatus(door, status, dir);
+	MOVE_CURSOR(30, __myNum + 18);
+	printf("\r ELEVATOR 1		|		ELEVATOR 2");
+	MOVE_CURSOR(30, __myNum + 20);
+	printf("\r	#	        B1");
+	fflush(stdout); // force output to be written to screen now
+	flag1.clear();
 	while (1) {
 		P1.Wait();
 		floor = MyDataPool->floor;
-		while (flag1.test_and_set() == true)
-			;
-		MOVE_CURSOR(30, __myNum + 19);
-		printf("\r ELEVATOR 1		|		ELEVATOR 2");
-		MOVE_CURSOR(30, __myNum + 20);
-		printf("\r			0				  ");
-		MOVE_CURSOR(30, __myNum + 21);
-		printf("\r			1				  ");
-		MOVE_CURSOR(30, __myNum + 22);
-		printf("\r			2				  ");
-		MOVE_CURSOR(30, __myNum + 23);
-		printf("\r			3				  ");
-		MOVE_CURSOR(30, __myNum + 24);
-		printf("\r			4				  ");
-		MOVE_CURSOR(30, __myNum + 25);
-		printf("\r			5				  ");
-		MOVE_CURSOR(30, __myNum + 26);
-		printf("\r			6				  ");
-		MOVE_CURSOR(30, __myNum + 27);
-		printf("\r			7				  ");
-		MOVE_CURSOR(30, __myNum + 28);
-		printf("\r			8				  ");
-		MOVE_CURSOR(30, __myNum + 29);
-		printf("\r			9				  ");
-		fflush(stdout); // force output to be written to screen now
-		flag1.clear();
+		door = MyDataPool->door;
+		status = MyDataPool->status;
+		dir = MyDataPool->dir;
+		printStatus(door, status, dir);
 		printScreen(0, floor);
 		C1.Signal();
 
@@ -61,19 +48,20 @@ int UpdateLink::main() {
 	return 0;
 }
 
-void UpdateLink::printScreen(int __myNum, int floor) {
-	//while (flag.test_and_set() == true)
-	//	;
-	//MOVE_CURSOR(30, __myNum + 19);
-	//printf("\r ELEVATOR 1		|		ELEVATOR 2");
-	//printf("\x1b[A"); // you can add the number of lines: "\x1b[7A"
+void UpdateLink::printStatus(int door, int status, int dir) {
+	MOVE_CURSOR(0,  14);
+	(door) ? printf("Door : Open    ") : printf("Door : Closed");
+	MOVE_CURSOR(0, 15);
+	(status) ? printf("Status : In Service         ") : printf("Status : Out of Service");
+	MOVE_CURSOR(0, 16);
+	(dir) ? printf("Going Up     ") : printf("Going Down");
+}
 
-	//while (1) {
+void UpdateLink::printScreen(int __myNum, int floor) {
 	while (flag1.test_and_set() == true)
 		;
 	MOVE_CURSOR(30, __myNum + 20 + floor - 1);
 	printf("\r                       ");
-	//printf("%d				  ", floor - 1);
 	MOVE_CURSOR(30, __myNum + 20 + floor);
 	printf("\r	#		%d				  ", floor);
 	MOVE_CURSOR(30, __myNum + 20 + floor + 1);
@@ -93,42 +81,56 @@ int UpdateLinkTwo::main() {
 
 	floor = 0;
 	int __myNum = 0;
+	while (flag1.test_and_set() == true)
+		;
+	printStatus(door, status, dir);
+	MOVE_CURSOR(30, __myNum + 18);
+	printf("\r ELEVATOR 1		|		ELEVATOR 2");
+	MOVE_CURSOR(40, __myNum + 20);
+	printf("#			  ");
+	MOVE_CURSOR(30, __myNum + 21);
+	printf("\r			1				  ");
+	MOVE_CURSOR(30, __myNum + 22);
+	printf("\r			2				  ");
+	MOVE_CURSOR(30, __myNum + 23);
+	printf("\r			3				  ");
+	MOVE_CURSOR(30, __myNum + 24);
+	printf("\r			4				  ");
+	MOVE_CURSOR(30, __myNum + 25);
+	printf("\r			5				  ");
+	MOVE_CURSOR(30, __myNum + 26);
+	printf("\r			6				  ");
+	MOVE_CURSOR(30, __myNum + 27);
+	printf("\r			7				  ");
+	MOVE_CURSOR(30, __myNum + 28);
+	printf("\r			8				  ");
+	MOVE_CURSOR(30, __myNum + 29);
+	printf("\r			9				  ");
+	fflush(stdout); // force output to be written to screen now
+	flag1.clear();
 
 	while (1) {
 		P3.Wait();
 		floor = MyDataPool->floor;
-		while (flag1.test_and_set() == true)
-			;
-		MOVE_CURSOR(30, __myNum + 19);
-		printf("\r ELEVATOR 1		|		ELEVATOR 2");
-		MOVE_CURSOR(30, __myNum + 20);
-		printf("\r			0				  ");
-		MOVE_CURSOR(30, __myNum + 21);
-		printf("\r			1				  ");
-		MOVE_CURSOR(30, __myNum + 22);
-		printf("\r			2				  ");
-		MOVE_CURSOR(30, __myNum + 23);
-		printf("\r			3				  ");
-		MOVE_CURSOR(30, __myNum + 24);
-		printf("\r			4				  ");
-		MOVE_CURSOR(30, __myNum + 25);
-		printf("\r			5				  ");
-		MOVE_CURSOR(30, __myNum + 26);
-		printf("\r			6				  ");
-		MOVE_CURSOR(30, __myNum + 27);
-		printf("\r			7				  ");
-		MOVE_CURSOR(30, __myNum + 28);
-		printf("\r			8				  ");
-		MOVE_CURSOR(30, __myNum + 29);
-		printf("\r			9				  ");
-		fflush(stdout); // force output to be written to screen now
-		flag1.clear();
+		door = MyDataPool->door;
+		status = MyDataPool->status;
+		dir = MyDataPool->dir;
+		printStatus(door, status, dir);
 		printScreen(0, floor);
 		C3.Signal();
-
 	}
 	return 0;
 }
+
+void UpdateLinkTwo::printStatus(int door, int status, int dir) {
+	MOVE_CURSOR(40, 14);
+	(door) ? printf("Door : Open    ") : printf("Door : Closed");
+	MOVE_CURSOR(40, 15);
+	(status) ? printf("Status : In Service      ") : printf("Status : Out of Service");
+	MOVE_CURSOR(40, 16);
+	(dir) ? printf("Going Up    ") : printf("Going Down");
+}
+
 
 void UpdateLinkTwo::printScreen(int __myNum, int floor) {
 	//while (flag.test_and_set() == true)

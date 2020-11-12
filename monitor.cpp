@@ -9,6 +9,8 @@ struct 	    mydatapooldata {		// start of structure template
 	int floor;				// floor corresponding to lifts current position
 	int dir;			// direction of travel of lift
 	int status;		//status
+	int door;
+
 };
 
 

@@ -12,8 +12,9 @@ private:
 	int myNum;
 	int floor;
 	int status;
+	int door;
 public:
-	ElevatorTwo(int __myNumber) { myNum = __myNumber; floor = 0; status = 1; };
+	ElevatorTwo(int __myNumber) { myNum = __myNumber; floor = 0; status = 1; door = 1; };
 };
 
 #endif
