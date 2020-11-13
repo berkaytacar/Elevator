@@ -4,6 +4,8 @@
 #include "elevator.h"
 #include "monitor.h"
 #include "Elevator2.h"
+#include "Reader.h"
+#include "Algo.h"
 
 struct 	    mydatapooldata {		// start of structure template
 	int floor;				// floor corresponding to lifts current position
@@ -16,6 +18,7 @@ struct 	    mydatapooldata {		// start of structure template
 
 CEvent   ElevatorUpdate("E1UPD");
 
+
 int checkable[5] = { 11, 12, 13, 14, 'e' };
 
 int Dispatcher::main() {
@@ -25,6 +28,12 @@ int Dispatcher::main() {
 	CSemaphore C2("StatusDone", 1, 1);
 	CSemaphore P4("Status2", 0, 1);
 	CSemaphore C4("StatusDone2", 1, 1);
+
+
+
+	Algo ag(1);
+
+	ag.Resume();
 
 
 	//Initialize Elevator and Monitors
@@ -38,126 +47,130 @@ int Dispatcher::main() {
 	e2.Resume();
 	m1.Resume();
 	m2.Resume();
-	int err = 0;
-	status1 = 1;
-	status2 = 1;
+	//int err = 0;
+	//status1 = 1;
+	//status2 = 1;
 
 
-	while (err != 1) {
-		//////////////////////////////////////////////////////////////////////////////////////////////
-		// Read Floor and Dir Passenger Wants to go
-		int d;
-		int s;
-		int dest;
-		int flr;
+	//while (err != 1) {
+	//	//////////////////////////////////////////////////////////////////////////////////////////////
+	//	// Read Floor and Dir Passenger Wants to go
+	//	int d;
+	//	int s;
+	//	int dest;
+	//	int flr;
 
-		//RECIEVE UP OR DOWN (U= 117 / D = 100)
-		p1.Read(&s);
+	//	//RECIEVE UP OR DOWN (U= 117 / D = 100)
+	//	p1.Read(&s);
 
-		if (s == '=') {
-			MOVE_CURSOR(0, 4);
-			printf("saw the plus sign");
-			//p1.Read(&s);
-			//if (s == '+') {
-			p1.Read(&s);
-				if (s == '1') {// elv 1
-					printf("ele # 1 ");
-					e1.Post('+');
-					status1 = 1;
-					P2.Wait();
-					C2.Signal();
-				}
-				else if (s == '2') {// 14 // elv 2
-					e2.Post('+');
-					status2 = 1;
-					P4.Wait();
-					C4.Signal();
-				}
-			//}
-		}
-		else if (s == '-') {
-			p1.Read(&s);
-			if (s == '1') {// elv 1
-				e1.Post('-');
-				status1 = 0;
-				P2.Wait();
-				C2.Signal();
+	//	if (s == '=') {
+	//		MOVE_CURSOR(0, 4);
+	//		printf("saw the plus sign");
+	//		//p1.Read(&s);
+	//		//if (s == '+') {
+	//		p1.Read(&s);
+	//			if (s == '1') {// elv 1
+	//				printf("ele # 1 ");
+	//				e1.Post('+');
+	//				status1 = 1;
+	//				P2.Wait();
+	//				C2.Signal();
+	//			}
+	//			else if (s == '2') {// 14 // elv 2
+	//				e2.Post('+');
+	//				status2 = 1;
+	//				P4.Wait();
+	//				C4.Signal();
+	//			}
+	//		//}
+	//	}
+	//	else if (s == '-') {
+	//		p1.Read(&s);
+	//		if (s == '1') {// elv 1
+	//			e1.Post('-');
+	//			status1 = 0;
+	//			P2.Wait();
+	//			C2.Signal();
 
-			}
-			else if (s == '2'){// 14 // elv 2
-				e2.Post('-');
-				status2 = 0;
-				P4.Wait();
-				C4.Signal();
-			}
-		}
-		else if (s == 'e') {
-			p1.Read(&s);
-			if (s == 'e') {
-				e1.Post('e');// send elv1 and 2 to GROUND floor
-				e2.Post('e');
-				floor();
-			}
-		}
-		else if (s == 'u' || s == 'd') {// here is dir and the floor stuff
-			d = s;// direction here 
-			p1.Read(&s); // read it for the second time for the floor 
-			flr = s - 48;
-			if ((abs(flr - floor1) >= abs(flr - floor2)) && status2 != 0) {
-				d = (flr - floor2 >= 0) ? 'u' : 'd';
-				e2.Post(d);
-				e2.Post(flr);
-				err = inc2(flr, floor2);
-			}
-			else if (status1 != 0) {
-				d = (flr - floor1 >= 0) ? 'u' : 'd';
-				e1.Post(d);
-				e1.Post(flr);
-				err = inc(flr, floor1);
-			}
-		}
-		else if (s == '1' || s == '2') {
-			if (s == '1' && status1 != 0) { //elevator 1 
-				e1.Post('1');
-				p1.Read(&s);
-				flr = s - 48;
-				e1.Post(flr);
-				err = inc(flr, floor1);
+	//		}
+	//		else if (s == '2'){// 14 // elv 2
+	//			e2.Post('-');
+	//			status2 = 0;
+	//			P4.Wait();
+	//			C4.Signal();
+	//		}
+	//	}
+	//	else if (s == 'e') {
+	//		p1.Read(&s);
+	//		if (s == 'e') {
+	//			e1.Post('e');// send elv1 and 2 to GROUND floor
+	//			e2.Post('e');
+	//			floor();
+	//		}
+	//	}
+	//	else if (s == 'u' || s == 'd') {// here is dir and the floor stuff
+	//		d = s;// direction here 
+	//		p1.Read(&s); // read it for the second time for the floor 
+	//		flr = s - 48;
+	//		if ((abs(flr - floor1) >= abs(flr - floor2)) && status2 != 0) {
+	//			d = (flr - floor2 >= 0) ? 'u' : 'd';
+	//			e2.Post(d);
+	//			e2.Post(flr);
+	//			err = inc2(flr, floor2);
+	//		}
+	//		else if (status1 != 0) {
+	//			d = (flr - floor1 >= 0) ? 'u' : 'd';
+	//			e1.Post(d);
+	//			e1.Post(flr);
+	//			err = inc(flr, floor1);
+	//		}
+	//	}
+	//	else if (s == '1' || s == '2') {
+	//		if (s == '1' && status1 != 0) { //elevator 1 
+	//			e1.Post('1');
+	//			p1.Read(&s);
+	//			flr = s - 48;
+	//			e1.Post(flr);
+	//			err = inc(flr, floor1);
 
-			}
-			else if (s == '2' && status2 != 0) {
-				e2.Post('2');
-				p1.Read(&s);
-				flr = s - 48;
-				MOVE_CURSOR(50, 0);
-				printf("halfway point for dispatcher");
-				e2.Post(flr);
-				err = inc2(flr, floor2);
-			}
-		} 
+	//		}
+	//		else if (s == '2' && status2 != 0) {
+	//			e2.Post('2');
+	//			p1.Read(&s);
+	//			flr = s - 48;
+	//			MOVE_CURSOR(50, 0);
+	//			printf("halfway point for dispatcher");
+	//			e2.Post(flr);
+	//			err = inc2(flr, floor2);
+	//		}
+	//	} 
 
-		if (err == 1) {
-			e1.Post('e');// send elv1 and 2 to GROUND floor
-			e2.Post('e');
-			floor();
-		}
-		else if (err == 2) {  //ele 1
-			e1.Post('-');
-			status1 = 0;
-			P2.Wait();
-			C2.Signal();
-			err = 0;
+	//	if (err == 1) {
+	//		e1.Post('e');// send elv1 and 2 to GROUND floor
+	//		e2.Post('e');
+	//		floor();
+	//	}
+	//	else if (err == 2) {  //ele 1
+	//		e1.Post('-');
+	//		status1 = 0;
+	//		P2.Wait();
+	//		C2.Signal();
+	//		err = 0;
 
-		}
-		else if (err == 3) { // ele 2
-			e2.Post('-');
-			status2 = 0;
-			P4.Wait();
-			C4.Signal();
-			err = 0;
-		}
+	//	}
+	//	else if (err == 3) { // ele 2
+	//		e2.Post('-');
+	//		status2 = 0;
+	//		P4.Wait();
+	//		C4.Signal();
+	//		err = 0;
+	//	}
 
-	}
+	//}
+
+	//rd1.WaitForThread();
+	//rd2.WaitForThread();
+	ag.WaitForThread();
 
 	e1.WaitForThread();
 	e2.WaitForThread();

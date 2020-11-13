@@ -144,22 +144,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\RTExamples\RTExamples\rt.cpp" />
+    <ClCompile Include="Algo.cpp" />
     <ClCompile Include="dispatcher.cpp" />
     <ClCompile Include="elevator.cpp" />
     <ClCompile Include="inputKey.cpp" />
     <ClCompile Include="io.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="monitor.cpp" />
+    <ClCompile Include="Reader.cpp" />
     <ClCompile Include="updLink.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\RTExamples\RTExamples\rt.h" />
+    <ClInclude Include="Algo.h" />
     <ClInclude Include="dispatcher.h" />
     <ClInclude Include="elevator.h" />
     <ClInclude Include="Elevator2.h" />
     <ClInclude Include="inputKey.h" />
     <ClInclude Include="io.h" />
     <ClInclude Include="monitor.h" />
+    <ClInclude Include="Reader.h" />
     <ClInclude Include="updLink.h" />
     <ClInclude Include="updLink2.h" />
   </ItemGroup>
