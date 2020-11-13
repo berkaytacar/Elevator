@@ -9,6 +9,7 @@ private:
 	int main();
 	int myNum;
 
+
 public:
 	IO(int __myNumber) { myNum = __myNumber; };
 	void printScreen(int __myNum, int floor);

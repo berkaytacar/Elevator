@@ -45,6 +45,15 @@
     <ClCompile Include="Algo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Passenger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputPassenger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="floorCheckercpp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="elevator.h">
@@ -62,9 +71,6 @@
     <ClInclude Include="io.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="updLink.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inputKey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,6 +84,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Algo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Passenger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="updLink.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inputPassenger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="floorChecker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

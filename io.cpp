@@ -7,7 +7,8 @@
 #include "updLink.h"
 #include "inputKey.h"
 #include "updLink2.h"
-
+#include "Passenger.h"
+#include "inputPassenger.h"
 struct 	    mydatapooldata {		// start of structure template
 	int floor;				// floor corresponding to lifts current position
 	int dir;			// direction of travel of lift
@@ -29,8 +30,23 @@ int IO::main() {
 	//thread to recieve update from monitor
 	UpdateLink u1(1);
 	UpdateLinkTwo u2(2);
+
+	Passenger ps1(1, "a");
+	Passenger ps2(2, "a");
+	Passenger ps3(3,"a");
+	Passenger ps4(4,"a");
+
+	InputPassenger ipsg1(5, "b");
+
+
 	u1.Resume();
 	u2.Resume();
+	ps1.Resume();
+	ps2.Resume();
+	ps3.Resume();
+	ps4.Resume();
+	ipsg1.Resume();
+
 	InputKey ik1(1);
 	ik1.Resume();
 
@@ -92,7 +108,11 @@ int IO::main() {
 	//	printf("\nIO DONE 1 ITER\n");
 	//	*/
 	//}
-
+	ps1.WaitForThread();
+	ps2.WaitForThread();
+	ps3.WaitForThread();
+	ps4.WaitForThread();
+	ipsg1.WaitForThread();
 	u1.WaitForThread();
 	u2.WaitForThread();
 	ik1.WaitForThread();

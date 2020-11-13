@@ -147,10 +147,13 @@
     <ClCompile Include="Algo.cpp" />
     <ClCompile Include="dispatcher.cpp" />
     <ClCompile Include="elevator.cpp" />
+    <ClCompile Include="floorCheckercpp.cpp" />
     <ClCompile Include="inputKey.cpp" />
+    <ClCompile Include="InputPassenger.cpp" />
     <ClCompile Include="io.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="monitor.cpp" />
+    <ClCompile Include="Passenger.cpp" />
     <ClCompile Include="Reader.cpp" />
     <ClCompile Include="updLink.cpp" />
   </ItemGroup>
@@ -160,9 +163,12 @@
     <ClInclude Include="dispatcher.h" />
     <ClInclude Include="elevator.h" />
     <ClInclude Include="Elevator2.h" />
+    <ClInclude Include="floorChecker.h" />
     <ClInclude Include="inputKey.h" />
+    <ClInclude Include="inputPassenger.h" />
     <ClInclude Include="io.h" />
     <ClInclude Include="monitor.h" />
+    <ClInclude Include="Passenger.h" />
     <ClInclude Include="Reader.h" />
     <ClInclude Include="updLink.h" />
     <ClInclude Include="updLink2.h" />
