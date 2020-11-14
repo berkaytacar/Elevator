@@ -80,5 +80,8 @@
     <ClInclude Include="Algo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="justwork.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

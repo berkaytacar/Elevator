@@ -162,6 +162,7 @@
     <ClInclude Include="Elevator2.h" />
     <ClInclude Include="inputKey.h" />
     <ClInclude Include="io.h" />
+    <ClInclude Include="justwork.h" />
     <ClInclude Include="monitor.h" />
     <ClInclude Include="Reader.h" />
     <ClInclude Include="updLink.h" />

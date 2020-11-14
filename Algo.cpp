@@ -90,8 +90,7 @@ int Algo::main() {
 				e2.Post('2');
 				p1.Read(&s);
 				flr = s - 48;
-				MOVE_CURSOR(50, 0);
-				printf("halfway point for dispatcher");
+
 				e2.Post(flr);
 				//err = inc2(flr, floor2);
 			}

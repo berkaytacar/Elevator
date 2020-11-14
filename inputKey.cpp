@@ -26,13 +26,10 @@ int InputKey::main() {
 	while (1) {
 		int message = _getch(); // get the first message
 		int message2;
-		MOVE_CURSOR(0, 0);
-		printf("%d", message);// print the up or down in integer
+		
 		p1.Write(&message);
 		message2 = _getch();
-		MOVE_CURSOR(20, 0);
-		printf("%d", message);// print the up or down in integer
-
+		
 		p1.Write(&message2);
 	}
 	return 0;
