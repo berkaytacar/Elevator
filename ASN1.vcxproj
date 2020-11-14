@@ -172,6 +172,7 @@
     <ClInclude Include="Reader.h" />
     <ClInclude Include="updLink.h" />
     <ClInclude Include="updLink2.h" />
+    <ClInclude Include="updPass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

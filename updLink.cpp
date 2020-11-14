@@ -5,6 +5,7 @@
 #include "monitor.h"
 #include "updLink.h"
 #include "updLink2.h"
+#include "updPass.h"
 
 atomic_flag flag1;
 
@@ -146,4 +147,41 @@ void UpdateLinkTwo::printScreen(int __myNum, int floor) {
 	fflush(stdout); // force output to be written to screen now
 	flag1.clear();
 	return;
+}
+
+
+int UpdatePass::main() {
+	CSemaphore P5("pd", 0, 1);
+	CSemaphore C5("pdd", 1, 1);
+	while (flag1.test_and_set() == true)
+		;
+	MOVE_CURSOR(0, 35);
+
+	printf("Passenger #         Current Floor            Dest Floor           ");
+	
+	fflush(stdout); // force output to be written to screen now
+	flag1.clear();
+	int y = 36;
+	while (1) {
+		P5.Wait();
+		while (flag1.test_and_set() == true)
+			;
+		MOVE_CURSOR(0, y);
+
+		printf("%d                 %d                  %d", y-35 ,curr-48, dest-48);
+
+		fflush(stdout); // force output to be written to screen now
+		flag1.clear();
+		C5.Signal();
+		y++;
+	}
+
+	return 0;
+
+}
+
+void UpdatePass::passData(int a, int b, int c) {
+	n = a;
+	curr = b;
+	dest = c;
 }

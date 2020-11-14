@@ -286,7 +286,6 @@ int Elevator::main() {
 
 void Elevator::raiseCond(int d, int f) {
 
-	printf("dir = %d, floor = %d", d, f);
 	if (d == 1) {
 		switch (f) {
 		case 0: U01.Signal();

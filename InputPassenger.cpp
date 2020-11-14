@@ -5,6 +5,7 @@
 #include "monitor.h"
 #include "updLink.h"
 #include "inputPassenger.h"
+#include "updPass.h"
 
 // if elv arrives to start floor
 // wait for a bit then safetogo
@@ -25,6 +26,13 @@
 int InputPassenger::main() {
 	CTypedPipe <int>	p1("Pipe1", 1024);			// create the three named pipelines 
 	CTypedPipe <int>	p2("Pipe2", 1024);
+
+	CSemaphore P5("pd", 0, 1);
+	CSemaphore C5("pdd", 1, 1);
+
+
+	UpdatePass up(1);
+	up.Resume();
 	/*CSemaphore P1("Elv", 0, 1);
 	CSemaphore C1("ElvDone", 1, 1);
 	CDataPool 		dp("Elevator", sizeof(struct mydatapooldata));
@@ -45,10 +53,21 @@ int InputPassenger::main() {
 		// getting the third msg from pipe2 START FLOOR
 		p2.Read(&message3);
 
+		up.passData(message, message2, message3);
+		C5.Wait();
+
+		P5.Signal();
+		
+		
 		m2->lock();
 		p1.Write(&message);// direction
 		p1.Write(&message2);// start floor
 		m2->unlock();
+
+
+
+
+
 		
 		if (message == 'd') {
 			downWait[message2 - 48][downNum[message2 - 48]] = message3;
@@ -60,7 +79,7 @@ int InputPassenger::main() {
 			upNum[message2-48]++;
 		}
 	}
-
+	up.WaitForThread();
 	return 0;
 }
 
