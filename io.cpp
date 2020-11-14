@@ -9,6 +9,8 @@
 #include "updLink2.h"
 #include "Passenger.h"
 #include "inputPassenger.h"
+#include "floorChecker.h"
+
 struct 	    mydatapooldata {		// start of structure template
 	int floor;				// floor corresponding to lifts current position
 	int dir;			// direction of travel of lift
@@ -23,6 +25,7 @@ int IO::main() {
 	CSemaphore C1("ElvDone", 1, 1);
 	CDataPool 		dp("Elevator", sizeof(struct mydatapooldata));
 	struct mydatapooldata* MyDataPool = (struct mydatapooldata*)(dp.LinkDataPool());
+	CCondition   OpenTheGates("GateOpen");
 
 	//thread to print to io
 
@@ -31,24 +34,34 @@ int IO::main() {
 	UpdateLink u1(1);
 	UpdateLinkTwo u2(2);
 
-	Passenger ps1(1, "a");
-	Passenger ps2(2, "a");
-	Passenger ps3(3,"a");
-	Passenger ps4(4,"a");
 
-	InputPassenger ipsg1(5, "b");
+	mutex* m1 = new mutex();
+	mutex* m2 = new mutex();
+
+
+
+	floorChecker fc(5, m2);
+	//InputPassenger ipsg1(5, m2);
 
 
 	u1.Resume();
 	u2.Resume();
+
+	fc.Resume();
+
+	InputKey ik1(1, m2);
+	ik1.Resume();
+
+	OpenTheGates.Wait();
+	Passenger ps1(1, m1);
+	Passenger ps2(2, m1);
+	Passenger ps3(3, m1);
+	Passenger ps4(4, m1);
 	ps1.Resume();
 	ps2.Resume();
 	ps3.Resume();
 	ps4.Resume();
-	ipsg1.Resume();
 
-	InputKey ik1(1);
-	ik1.Resume();
 
 	//just recieve inputs from keyboard and send to dispatcher
 	
@@ -112,7 +125,7 @@ int IO::main() {
 	ps2.WaitForThread();
 	ps3.WaitForThread();
 	ps4.WaitForThread();
-	ipsg1.WaitForThread();
+	fc.WaitForThread();
 	u1.WaitForThread();
 	u2.WaitForThread();
 	ik1.WaitForThread();

@@ -15,6 +15,7 @@ private:
 	int door;
 	int* sortQ(int[], int, int*, int);
 	int* removeQ(int[], int);
+	void raiseCond(int dir, int flr);
 
 public:
 	Elevator(int __myNumber) { myNum = __myNumber; floor = 0; status = 1; door = 1; };

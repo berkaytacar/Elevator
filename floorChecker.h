@@ -4,6 +4,8 @@
 
 
 #include "C:\RTExamples\RTExamples\rt.h"
+#include <mutex>
+#include "inputPassenger.h"
 
 class floorChecker : public ActiveClass {
 private:
@@ -12,18 +14,15 @@ private:
 	int finish;
 	int dir;
 	int myNum;
-	CMutex* m3;
+	mutex* m2;
+	void sendPpl(int f,  InputPassenger& i, int e, int dir); //dir = 1 go up
 	//void printScreen(int __myNum, int floor);
 
 public:
-	floorChecker(int __myNumber, string Name) {
+	floorChecker(int __myNumber, mutex* m) {
 		myNum = __myNumber;
-		m3 = new CMutex(string("__Mutex__") + string(Name));
+		m2 = m;
 	};
-	int upWait[10][20];
-	int downWait[10][20];
-	int upNum[10];
-	int downNum[10];
 };
 
 

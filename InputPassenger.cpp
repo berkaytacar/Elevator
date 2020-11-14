@@ -20,7 +20,6 @@
 //. |
 //9 |
 // [0][2]
-CCondition   SafeToGo("SafeToGo");// safe to go for passengers
 
 
 int InputPassenger::main() {
@@ -39,31 +38,26 @@ int InputPassenger::main() {
 
 		// getting the first msg from pipe2 DIRECTION
 		p2.Read(&message);// get the first message
-		MOVE_CURSOR(20, 10);
-		printf("%d", message);// print the up or down in integer
-		//p1.Write(&message);
 
 		// getting the second msg from pipe2 START FLOOR
 		p2.Read(&message2);
-		MOVE_CURSOR(20, 10);
-		printf("%d", message2);// print the start floor for passangers
-		//p1.Write(&message2);
 
 		// getting the third msg from pipe2 START FLOOR
 		p2.Read(&message3);
-		MOVE_CURSOR(20, 10);
-		printf("%d", message3);// print the finsih floor for passangers
-		//p1.Write(&message3);
+
+		m2->lock();
 		p1.Write(&message);// direction
 		p1.Write(&message2);// start floor
+		m2->unlock();
+		
 		if (message == 'd') {
-			downWait[message2][downNum[message2]] = message3;
-			downNum[message2]++;
+			downWait[message2 - 48][downNum[message2 - 48]] = message3;
+			downNum[message2 - 48]++;
 
 		}
 		else {
-			upWait[message2][upNum[message2]] = message3;
-			upNum[message2]++;
+			upWait[message2-48][upNum[message2-48]] = message3;
+			upNum[message2-48]++;
 		}
 	}
 

@@ -4,6 +4,7 @@
 
 
 #include "C:\RTExamples\RTExamples\rt.h"
+#include <mutex>
 
 class InputKey : public ActiveClass {
 private:
@@ -11,10 +12,12 @@ private:
 	int myNum;
 	int status;
 	int floor;
+	mutex* m2;
+
 	void printScreen(int __myNum, int floor);
 
 public:
-	InputKey(int __myNumber) { myNum = __myNumber; };
+	InputKey(int __myNumber, mutex* m) { myNum = __myNumber; m2 = m; };
 	int sendUpd() { return floor; };
 };
 

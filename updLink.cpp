@@ -133,13 +133,7 @@ void UpdateLinkTwo::printStatus(int door, int status, int dir) {
 
 
 void UpdateLinkTwo::printScreen(int __myNum, int floor) {
-	//while (flag.test_and_set() == true)
-	//	;
-	//MOVE_CURSOR(30, __myNum + 19);
-	//printf("\r ELEVATOR 1		|		ELEVATOR 2");
-	//printf("\x1b[A"); // you can add the number of lines: "\x1b[7A"
 
-	//while (1) {
 	while (flag1.test_and_set() == true)
 		;
 	MOVE_CURSOR(40, __myNum + 20 + floor - 1);

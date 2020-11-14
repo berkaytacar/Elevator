@@ -4,6 +4,10 @@
 #include "Elevator2.h"
 #include "Reader.h"
 
+CCondition   OpenTheGates("GateOpen");
+CCondition   CloseTheGates("GateClose");
+
+
 int Algo::main() {
 
 	CTypedPipe <int>	p1("Pipe1", 1024);			// create the three named pipelines 
@@ -20,6 +24,9 @@ int Algo::main() {
 	
 	int status1 = 1;
 	int status2 = 1;
+
+	OpenTheGates.Reset();
+
 	while (err != 1) {
 		//////////////////////////////////////////////////////////////////////////////////////////////
 		// Read Floor and Dir Passenger Wants to go
@@ -63,6 +70,17 @@ int Algo::main() {
 		else if (s == 'u' || s == 'd') {// here is dir and the floor stuff
 			d = s;// direction here 
 			p1.Read(&s); // read it for the second time for the floor 
+
+			//Consideration for d+ and d- (Using a CCondition)
+			if (s == '+' && d == 'd') { //start sequence of random passengers
+				OpenTheGates.Signal();
+				continue;
+			}
+			else if (s == '-' && d == 'd') { // stop sequence of random passengers
+				OpenTheGates.Reset();
+				continue;
+			}
+
 			flr = s - 48;
 			if ((abs(flr - rd1.floor1) >= abs(flr - rd2.floor2)) && status2 != 0) {
 				d = (flr - rd2.floor2 >= 0) ? 'u' : 'd';

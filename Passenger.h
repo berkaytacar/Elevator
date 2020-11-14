@@ -3,6 +3,7 @@
 #define __Passenger__
 
 #include "C:\RTExamples\RTExamples\rt.h"
+#include <mutex>
 
 
 class Passenger : public ActiveClass {
@@ -12,13 +13,13 @@ private:
 	int finish;
 	int dir;
 	int myNum;
-	CMutex* m2;// for the passengers
+	mutex* m1;
 	
 public:
 	//Passenger(int __myNumber) { myNum = __myNumber; };
-	Passenger(int __myNumber, string Name) {
+	Passenger(int __myNumber, mutex* m ) {
 		myNum = __myNumber;
-		m2 = new CMutex(string("__Mutex__") + string(Name));
+		m1 = m;
 	};
 };
 

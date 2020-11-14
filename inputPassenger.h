@@ -5,6 +5,7 @@
 
 
 #include "C:\RTExamples\RTExamples\rt.h"
+#include <mutex>
 
 class InputPassenger : public ActiveClass {
 private:
@@ -13,13 +14,13 @@ private:
 	int finish;
 	int dir;
 	int myNum;
-	CMutex* m1;
+	mutex* m2;
 	//void printScreen(int __myNum, int floor);
 
 public:
-	InputPassenger(int __myNumber, string Name) {
+	InputPassenger(int __myNumber, mutex* m) {
 		myNum = __myNumber;
-		m1 = new CMutex(string("__Mutex__") + string(Name));
+		m2 = m;
 	};
 	int upWait[10][20];
 	int downWait[10][20];

@@ -14,6 +14,51 @@ struct 	    mydatapooldata {		// start of structure template
 
 };
 
+CCondition   U01("U0");
+CCondition   U11("U1");
+CCondition   U21("U2");
+CCondition   U31("U3");
+CCondition   U41("U4");
+CCondition   U51("U5");
+CCondition   U61("U6");
+CCondition   U71("U7");
+CCondition   U81("U8");
+CCondition   U91("U9");
+CCondition   D01("D0");
+CCondition   D11("D1");
+CCondition   D21("D2");
+CCondition   D31("D3");
+CCondition   D41("D4");
+CCondition   D51("D5");
+CCondition   D61("D6");
+CCondition   D71("D7");
+CCondition   D81("D8");
+CCondition   D91("D9");
+
+
+CCondition   U02("U02");
+CCondition   U12("U12");
+CCondition   U22("U22");
+CCondition   U32("U32");
+CCondition   U42("U42");
+CCondition   U52("U52");
+CCondition   U62("U62");
+CCondition   U72("U72");
+CCondition   U82("U82");
+CCondition   U92("U92");
+CCondition   D02("D02");
+CCondition   D12("D12");
+CCondition   D22("D22");
+CCondition   D32("D32");
+CCondition   D42("D42");
+CCondition   D52("D52");
+CCondition   D62("D62");
+CCondition   D72("D72");
+CCondition   D82("D82");
+CCondition   D92("D92");
+
+
+
 
 int Elevator::main() {
 	UINT Message;
@@ -25,6 +70,7 @@ int Elevator::main() {
 	MyDataPool->dir = 1;
 	MyDataPool->floor = 0;
 	MyDataPool->status = 1;
+	MyDataPool->door = 1;
 	CEvent   ElevatorUpdate("E1UPD");
 	int d;
 	int error = 0;
@@ -36,16 +82,19 @@ int Elevator::main() {
 
 	int destin;
 
+	int ppl = 0;
+	int dppl[4] = { -1, -1, -1, -1 };
+
 	do {
 	top:
 		// Suspend until message arrives
 		//if (Message = myMail.GetMessage()) {
 		if (myMail.TestForMessage()) {
 			Message = myMail.GetMessage();
-			if ((Message == 'd' || Message == 'u') && status == 1) { //going down
-				d = (Message == 'd') ? -1 : 1; // d = -1 if Message == d
+			if ((Message == 'd' || Message == 'u') && status == 1) { 
+				d = (Message == 'd') ? -1 : 1; // d = -1 if Message == down 
 				if (Message = myMail.GetMessage()) {
-					Sleep(3000);
+					//Sleep(3000);
 					// SORT QUEUE DETERMINE NEXT FLOOR IN ORDER
 					//int destin = Message;
 					qsize++;
@@ -54,12 +103,16 @@ int Elevator::main() {
 					//baed onn message choose what floor to go to
 					
 					while (floor != destin) {
+						MyDataPool->dir = (d == 1) ? 1 : 0;
+						MyDataPool->door = 0;
+						MyDataPool->floor = floor;
+						ElevatorUpdate.Signal();
+						Sleep(2000);
 						floor = floor + d;
 						MyDataPool->floor = floor;
 						MyDataPool->dir = (d == 1) ? 1 : 0;
 						MyDataPool->door = (floor == destin) ? 1 : 0;
 						ElevatorUpdate.Signal();
-						Sleep(2000);
 						if (myMail.TestForMessage()) {
 							Message = myMail.GetMessage();
 							if (Message == 'e' || Message == '-') {
@@ -74,17 +127,24 @@ int Elevator::main() {
 								qpt = sortQ(q, Message, &qsize, d);
 								destin = *(qpt);
 							}
+							/*else if (Message == '1') { //  MAYBE DLEETEL
+								qsize++;
+								Message = myMail.GetMessage();
+								qpt = sortQ(q, Message, &qsize, d);
+								destin = *(qpt);
+							}*/
 						}
 					}
 					qsize--;
 					qpt = removeQ(q, qsize);
-					Sleep(3000);
+					raiseCond(d, floor);
+					Sleep(1000);
 				}
 			}
 			else if (Message == '1' && status == 1) {
 				if (Message = myMail.GetMessage()) {
 					// do something
-					Sleep(3000);
+					//Sleep(3000);
 					int destin = Message;
 					if (destin - floor >= 0) {
 						d = 1;
@@ -97,12 +157,17 @@ int Elevator::main() {
 					qpt = sortQ(q, Message, &qsize, d);
 					destin = *(qpt);
 					while (floor != destin) {
+						MyDataPool->dir = (d == 1) ? 1 : 0;
+						MyDataPool->door = 0;
+						MyDataPool->floor = floor;
+						ElevatorUpdate.Signal();
+						Sleep(2000);
 						floor = floor + d;
 						MyDataPool->floor = floor;
 						MyDataPool->dir = (d == 1) ? 1 : 0;
 						MyDataPool->door = (floor == destin) ? 1 : 0;
 						ElevatorUpdate.Signal();
-						Sleep(2000);
+						
 						if (myMail.TestForMessage()) {
 							Message = myMail.GetMessage();
 							if (Message == 'e' || Message == '-') {
@@ -120,7 +185,8 @@ int Elevator::main() {
 					}
 					qsize--;
 					qpt = removeQ(q, qsize);
-					Sleep(3000);
+					raiseCond(d, floor);
+					Sleep(1000);
 				}
 			}
 			else if (Message == 'e') { //error go to ground floor
@@ -153,15 +219,19 @@ int Elevator::main() {
 
 		else if (qsize != 0) {
 			destin = *(qpt);
-			//baed onn message choose what floor to go to
+			//go to next queued floor
 
 			while (floor != destin) {
+				MyDataPool->dir = (d == 1) ? 1 : 0;
+				MyDataPool->door = 0;
+				MyDataPool->floor = floor;
+				ElevatorUpdate.Signal();
+				Sleep(2000);
 				floor = floor + d;
 				MyDataPool->floor = floor;
 				MyDataPool->dir = (d == 1) ? 1 : 0;
 				MyDataPool->door = (floor == destin) ? 1 : 0;
 				ElevatorUpdate.Signal();
-				Sleep(2000);
 				if (myMail.TestForMessage()) {
 					Message = myMail.GetMessage();
 					if (Message == 'e' || Message == '-') {
@@ -180,7 +250,8 @@ int Elevator::main() {
 			}
 			qsize--;
 			qpt = removeQ(q, qsize);
-			Sleep(3000);
+			raiseCond(d, floor);
+			Sleep(1000);
 
 		}
 
@@ -207,9 +278,107 @@ int Elevator::main() {
 
 		}
 
+
 	} while (error != 1); // continue forever ??
 
 	return 0;
+}
+
+void Elevator::raiseCond(int d, int f) {
+
+	printf("dir = %d, floor = %d", d, f);
+	if (d == 1) {
+		switch (f) {
+		case 0: U01.Signal();
+			Sleep(1000);
+			U01.Reset();
+			break;
+		case 1: U11.Signal();
+			Sleep(1000);
+			U11.Reset();
+			break;
+		case 2: U21.Signal();
+			Sleep(1000);
+			U21.Reset();
+		case 3: U31.Signal();
+			Sleep(1000);
+			U31.Reset();
+			break;
+		case 4: U41.Signal();
+			Sleep(1000);
+			U41.Reset();
+			break;
+		case 5: U51.Signal();
+			Sleep(1000);
+			U51.Reset();
+			break;
+		case 6: U61.Signal();
+			Sleep(1000);
+			U61.Reset();
+			break;
+		case 7: U71.Signal();
+			Sleep(1000);
+			U71.Reset();
+			break;
+		case 8: U81.Signal();
+			Sleep(1000);
+			U81.Reset();
+			break;
+		case 9: U91.Signal();
+			Sleep(1000);
+			U91.Reset();
+			break;
+		default:
+			break;
+		}
+	}
+	else {
+		switch (f) {
+		case 0: D01.Signal();
+			Sleep(1000);
+			D01.Reset();
+			break;
+		case 1: D11.Signal();
+			Sleep(1000);
+			D11.Reset();
+			break;
+		case 2: D21.Signal();
+			Sleep(1000);
+			D21.Reset();
+		case 3: D31.Signal();
+			Sleep(1000);
+			D31.Reset();
+			break;
+		case 4: D41.Signal();
+			Sleep(1000);
+			D41.Reset();
+			break;
+		case 5: D51.Signal();
+			Sleep(1000);
+			D51.Reset();
+			break;
+		case 6: D61.Signal();
+			Sleep(1000);
+			D61.Reset();
+			break;
+		case 7: D71.Signal();
+			Sleep(1000);
+			D71.Reset();
+			break;
+		case 8: D81.Signal();
+			Sleep(1000);
+			D81.Reset();
+			break;
+		case 9: D91.Signal();
+			Sleep(1000);
+			D91.Reset();
+			break;
+		default:
+			break;
+		}
+		
+	}
+
 }
 
 int* Elevator::sortQ(int arr[], int msg, int* n, int dir) {
@@ -276,6 +445,7 @@ int ElevatorTwo::main() {
 	MyDataPool2->dir = 1;
 	MyDataPool2->floor = 0;
 	MyDataPool2->status = 1;
+	MyDataPool2->door = 1;
 	CEvent   ElevatorUpdate2("E2UPD");
 	int d;
 	int error = 0;
@@ -297,7 +467,7 @@ int ElevatorTwo::main() {
 				d = (Message == 'd') ? -1 : 1; // d = -1 if Message == d
 				if (Message = myMail.GetMessage()) {
 					// do something
-					Sleep(3000);
+					//Sleep(3000);
 
 					qsize++;
 					qpt = sortQ(q, Message, &qsize, d);
@@ -306,12 +476,17 @@ int ElevatorTwo::main() {
 					//baed onn message choose what floor to go to
 
 					while (floor != destin) {
+						MyDataPool2->dir = (d == 1) ? 1 : 0;
+						MyDataPool2->door = 0;
+						MyDataPool2->floor = floor;
+						ElevatorUpdate2.Signal();
+						Sleep(2000);
 						floor = floor + d;
 						MyDataPool2->dir = (d==1) ? 1 : 0;
 						MyDataPool2->door = (floor == destin) ? 1 : 0;
 						MyDataPool2->floor = floor;
 						ElevatorUpdate2.Signal();
-						Sleep(2000);
+						
 						if (myMail.TestForMessage()) {
 							Message = myMail.GetMessage();
 							if (Message == 'e' || Message == '-') {
@@ -325,11 +500,19 @@ int ElevatorTwo::main() {
 								qpt = sortQ(q, Message, &qsize, d);
 								destin = *(qpt);
 							}
+							/*else if (Message == '2') {
+								printf("HELLO");
+								qsize++;
+								Message = myMail.GetMessage();
+								qpt = sortQ(q, Message, &qsize, d);
+								destin = *(qpt);
+							}*/
 						}
 					}
 					qsize--;
 					qpt = removeQ(q, qsize);
-					Sleep(7000);
+					raiseCond(d, floor);
+					Sleep(1000);
 
 				}
 			}
@@ -337,7 +520,7 @@ int ElevatorTwo::main() {
 				//printf("got second passengers request");
 				if (Message = myMail.GetMessage()) {
 					// do something
-					Sleep(3000);
+					//Sleep(3000);
 
 					qsize++;
 					qpt = sortQ(q, Message, &qsize, d);
@@ -352,12 +535,16 @@ int ElevatorTwo::main() {
 					//baed onn message choose what floor to go to
 
 					while (floor != destin) {
+						MyDataPool2->dir = (d == 1) ? 1 : 0;
+						MyDataPool2->door = 0;
+						MyDataPool2->floor = floor;
+						ElevatorUpdate2.Signal();
+						Sleep(2000);
 						floor = floor + d;
 						MyDataPool2->floor = floor;
 						MyDataPool2->dir = (d == 1) ? 1 : 0;
 						MyDataPool2->door = (floor == destin) ? 1 : 0;
 						ElevatorUpdate2.Signal();
-						Sleep(2000);
 						if (myMail.TestForMessage()) {
 							Message = myMail.GetMessage();
 							if (Message == 'e' || Message == '-') {
@@ -375,7 +562,8 @@ int ElevatorTwo::main() {
 					}
 					qsize--;
 					qpt = removeQ(q, qsize);
-					Sleep(3000);
+					raiseCond(d, floor);
+					Sleep(1000);
 
 				}
 			}
@@ -409,12 +597,16 @@ int ElevatorTwo::main() {
 			destin = *(qpt);
 					//baed onn message choose what floor to go to
 				while (floor != destin) {
+					MyDataPool2->dir = (d == 1) ? 1 : 0;
+					MyDataPool2->door = 0;
+					MyDataPool2->floor = floor;
+					ElevatorUpdate2.Signal();
+					Sleep(2000);
 					floor = floor + d;
 					MyDataPool2->dir = (d==1) ? 1 : 0;
 					MyDataPool2->door = (floor == destin) ? 1 : 0;
 					MyDataPool2->floor = floor;
 					ElevatorUpdate2.Signal();
-					Sleep(2000);
 					if (myMail.TestForMessage()) {
 						Message = myMail.GetMessage();
 						if (Message == 'e' || Message == '-') {
@@ -432,7 +624,8 @@ int ElevatorTwo::main() {
 				}
 				qsize--;
 				qpt = removeQ(q, qsize);
-				Sleep(3000);
+				raiseCond(d, floor);
+				Sleep(1000);
 
 		}
 
@@ -511,4 +704,101 @@ int* ElevatorTwo::removeQ(int arr[], int n) {
 		arr[i] = arr[i + 1];
 	}
 	return arr;
+}
+
+
+void ElevatorTwo::raiseCond(int d, int f) {
+
+	if (d == 1) {
+		switch (f) {
+		case 0: U02.Signal();
+			Sleep(1000);
+			U02.Reset();
+			break;
+		case 1: U12.Signal();
+			Sleep(1000);
+			U12.Reset();
+			break;
+		case 2: U22.Signal();
+			Sleep(1000);
+			U22.Reset();
+		case 3: U32.Signal();
+			Sleep(1000);
+			U32.Reset();
+			break;
+		case 4: U42.Signal();
+			Sleep(1000);
+			U42.Reset();
+			break;
+		case 5: U52.Signal();
+			Sleep(1000);
+			U52.Reset();
+			break;
+		case 6: U62.Signal();
+			Sleep(1000);
+			U62.Reset();
+			break;
+		case 7: U72.Signal();
+			Sleep(1000);
+			U72.Reset();
+			break;
+		case 8: U82.Signal();
+			Sleep(1000);
+			U82.Reset();
+			break;
+		case 9: U92.Signal();
+			Sleep(1000);
+			U92.Reset();
+			break;
+		default:
+			break;
+		}
+	}
+	else {
+		switch (f) {
+		case 0: D02.Signal();
+			Sleep(1000);
+			D02.Reset();
+			break;
+		case 1: D12.Signal();
+			Sleep(1000);
+			D12.Reset();
+			break;
+		case 2: D22.Signal();
+			Sleep(1000);
+			D22.Reset();
+		case 3: D32.Signal();
+			Sleep(1000);
+			D32.Reset();
+			break;
+		case 4: D42.Signal();
+			Sleep(1000);
+			D42.Reset();
+			break;
+		case 5: D52.Signal();
+			Sleep(1000);
+			D52.Reset();
+			break;
+		case 6: D62.Signal();
+			Sleep(1000);
+			D62.Reset();
+			break;
+		case 7: D72.Signal();
+			Sleep(1000);
+			D72.Reset();
+			break;
+		case 8: D82.Signal();
+			Sleep(1000);
+			D82.Reset();
+			break;
+		case 9: D92.Signal();
+			Sleep(1000);
+			D92.Reset();
+			break;
+		default:
+			break;
+		}
+
+	}
+
 }
