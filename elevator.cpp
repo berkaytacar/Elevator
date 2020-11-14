@@ -58,6 +58,8 @@ CCondition   D82("D82");
 CCondition   D92("D92");
 
 
+CCondition Max1("Full1");
+CCondition Max2("Full2");
 
 
 int Elevator::main() {
@@ -441,7 +443,7 @@ int ElevatorTwo::main() {
 
 	CDataPool 		dp2("Elevator2", sizeof(struct mydatapooldata));
 	struct mydatapooldata* MyDataPool2 = (struct mydatapooldata*)(dp2.LinkDataPool());
-
+	Max2.Reset();
 	MyDataPool2->dir = 1;
 	MyDataPool2->floor = 0;
 	MyDataPool2->status = 1;
@@ -455,6 +457,9 @@ int ElevatorTwo::main() {
 	int* qpt = q;
 
 	int destin;
+
+	int ppl2 = 0;
+	int dppl2[4] = { -1, -1, -1, -1 };
 
 	do {
 	top2:
@@ -521,6 +526,14 @@ int ElevatorTwo::main() {
 				if (Message = myMail.GetMessage()) {
 					// do something
 					//Sleep(3000);
+
+					dppl2[ppl2] = Message;
+					ppl2++;
+					if (ppl2 == 4) {
+						Max2.Signal();
+					}
+					
+
 
 					qsize++;
 					qpt = sortQ(q, Message, &qsize, d);
@@ -595,6 +608,7 @@ int ElevatorTwo::main() {
 
 		else if (qsize != 0) {
 			destin = *(qpt);
+			printf("%d", destin);
 					//baed onn message choose what floor to go to
 				while (floor != destin) {
 					MyDataPool2->dir = (d == 1) ? 1 : 0;
@@ -651,6 +665,20 @@ int ElevatorTwo::main() {
 			Sleep(2000);
 			error = 0;
 
+		}
+
+		int rep = ppl2;
+		for (int i = 0; i < rep; i++) {	
+			if (floor = dppl2[i]) {
+				for (int j = ppl2-1; j > i; j--) {
+					dppl2[j] = dppl2[j - 1];
+				}
+				ppl2--;
+				i--;
+			}
+		}
+		if (ppl2 < 4) {
+			Max2.Reset();
 		}
 
 	} while (error != 1); // continue forever ??
@@ -712,6 +740,7 @@ void ElevatorTwo::raiseCond(int d, int f) {
 	if (d == 1) {
 		switch (f) {
 		case 0: U02.Signal();
+
 			Sleep(1000);
 			U02.Reset();
 			break;
@@ -801,4 +830,31 @@ void ElevatorTwo::raiseCond(int d, int f) {
 
 	}
 
+}
+
+
+void ElevatorTwo::readInTwo() {
+	for (int i = 0; i < 4; i++) {
+		if (myMail.TestForMessage(100) != WAIT_TIMEOUT) {
+			UINT Message = myMail.GetMessage();
+			if (Message == '2' && status == 1) {
+				//printf("got second passengers request");
+				if (Message = myMail.GetMessage()) {
+					// do something
+					//Sleep(3000);
+
+					dppl2[ppl2] = Message;
+					ppl2++;
+					if (ppl2 == 4) {
+						Max2.Signal();
+					}
+
+					qsize++;
+					qpt = sortQ(q, Message, &qsize, d);
+					destin = *(qpt);
+				}
+			}
+		}
+	}
+	return;
 }

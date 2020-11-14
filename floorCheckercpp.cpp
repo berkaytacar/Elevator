@@ -230,9 +230,18 @@ int floorChecker::main() {
 void floorChecker::sendPpl(int f, InputPassenger& i, int e, int dir) {
 	CTypedPipe <int>	p1("Pipe1", 1024);			// create the three named pipelines
 
+	CCondition Max1("Full1");
+	CCondition Max2("Full2");
+
 	//DIR = 1 (up)  DIR = 2 (DOWN)
+	if (Max2.Wait(50) != WAIT_TIMEOUT) {
+		return;
+	}
+
 	if (dir == 1) {
+
 		int n = i.upNum[f];
+		printf("%d", n);
 		for (int j = 0; j < n; j++) {
 			int val = i.upWait[f][j];
 			//printf("%d", val);
@@ -241,9 +250,13 @@ void floorChecker::sendPpl(int f, InputPassenger& i, int e, int dir) {
 			p1.Write(&e);
 			p1.Write(&val);
 			m2->unlock();
+			i.upNum[f]--;
+			if (Max2.Wait(80) != WAIT_TIMEOUT) {
+				return;
+			}
 		}
 		//not true
-		i.upNum[f] = 0;
+		
 	}
 	else {
 		int n = i.downNum[f];

@@ -55,10 +55,17 @@ int IO::main() {
 	OpenTheGates.Wait();
 	Passenger ps1(1, m1);
 	Passenger ps2(2, m1);
+	Passenger ps22(2, m1);
+	/*Passenger ps23(2, m1);
+	Passenger ps24(2, m1);*/
+
 	Passenger ps3(3, m1);
 	Passenger ps4(4, m1);
 	ps1.Resume();
 	ps2.Resume();
+	ps22.Resume();
+	/*ps23.Resume();
+	ps24.Resume();*/
 	ps3.Resume();
 	ps4.Resume();
 
@@ -123,6 +130,11 @@ int IO::main() {
 	//}
 	ps1.WaitForThread();
 	ps2.WaitForThread();
+	ps22.WaitForThread();
+	//ps23.WaitForThread();
+
+	//ps24.WaitForThread();
+
 	ps3.WaitForThread();
 	ps4.WaitForThread();
 	fc.WaitForThread();
